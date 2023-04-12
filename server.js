@@ -1,7 +1,8 @@
 import express from 'express';
 import airtableCheck from './airtable/airtable.js';
 // Import routes
-import {tshirtRoutes} from './routes/tshirtRoutes.js';
+// import {tshirtRoutes} from './routes/tshirtRoutes.js';
+import router from './routes/routes.js';
 
 const app = express();
 const PORT = 8080;
@@ -9,11 +10,11 @@ const PORT = 8080;
 app.use(express.json());
 
 // Use routes
-app.use(tshirtRoutes);
+//app.use(tshirtRoutes);
+app.use('/', router);
 
 app.listen(PORT, () => 
 {
-    airtableCheck();
 console.log(`⚡ Its alive on http://localhost:${PORT}`)
 }
 );

@@ -7,40 +7,42 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Hello</h1>
-    <h3>Register form</h3>
-   <form id="register-form">
-    <input type="email" name="email">
-    <input type="password" name="password">
-    <button type="submit">Register</button>
+    <h1>Quantababy</h1>
+   <form id="sleep-form">
+    <button type="submit">Sleep</button>
 </form>
-<!-- 
+
 <script>
-    ;(() => {
-        // Find form element
-        const registerForm = document.getElementById('register-form');
-        // Wait for event
-        registerForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    try{
-    // Get form values
-    const values = Object.values(registerForm).reduce((obj, field)=> {
-        if (field.name){
-        obj[field.name] = field.value;
+    (() => {
+      // Find form element
+      const sleepForm = document.getElementById('sleep-form');
+      // Wait for event
+      sleepForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          // Get subission time
+          const timeStamp = Date.now();
+          const date = new Date(timeStamp);
+          const isoDate = date.toISOString();
+          const sleepBody = {
+            time_stamp: timeStamp,
+            start_time: `${isoDate}`,
+          };
+          console.log(sleepBody);
+          // Submit form
+          const res = await fetch('/sleep/new', {
+            method: 'post',
+            body: JSON.stringify(sleepBody),
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+          });
+          console.log('response: ', res);
+        } catch (err) {
+          console.error(err);
         }
-        return obj;
-    }, {})
-    // Submit form
-   const res = await fetch('/api/register', {method: "post", body: JSON.stringify(values), headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
-    },})
-} catch (err) {
-    console.error(err);
-}
-    })
-    })()
-
-
-</script> -->
+      });
+    })();
+</script>
 </body>
 </html>

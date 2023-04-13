@@ -11,10 +11,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = 8080;
 
+// Use JSON for request body
 app.use(express.json());
 
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Use routes
-// app.use(tshirtRoutes);
 app.use('/', router);
 
 const startApp = async () => {
@@ -26,3 +29,5 @@ const startApp = async () => {
     console.error(e);
   }
 };
+
+startApp();

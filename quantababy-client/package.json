@@ -6,9 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+    },
+  "eslintConfig": {
+    "extends": ["wesbos"]
   },
   "dependencies": {
+    "eslint-config-wesbos": "^3.2.3",
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"

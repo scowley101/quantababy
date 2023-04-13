@@ -1,2 +1,6 @@
-./quantababy-server/.env
-./quantababy-server/node_modules
+# Ignore environment variables file
+quantababy-server/.env
+
+# Ignore node_modules folders
+quantababy-server/node_modules/
+quantababy-client/node_modules/ # if you have a separate node_modules folder in the client

@@ -1,8 +1,12 @@
 import express from 'express';
-import airtableCheck from './airtable/airtable.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 // Import routes
-// import {tshirtRoutes} from './routes/tshirtRoutes.js';
 import router from './routes/routes.js';
+
+// ESM specific features
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 const PORT = 8080;
@@ -10,11 +14,15 @@ const PORT = 8080;
 app.use(express.json());
 
 // Use routes
-//app.use(tshirtRoutes);
+// app.use(tshirtRoutes);
 app.use('/', router);
 
-app.listen(PORT, () => 
-{
-console.log(`⚡ Its alive on http://localhost:${PORT}`)
-}
-);
+const startApp = async () => {
+  try {
+    app.listen(PORT, () => {
+      console.log(`⚡ Its alive on http://localhost:${PORT}`);
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};

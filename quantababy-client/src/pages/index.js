@@ -1,12 +1,12 @@
 // pages/index.js
 import React from 'react';
-import SleepForm from '../components/SleepForm';
+import Sleep from '../components/Sleep';
 
 function HomePage() {
   return (
     <div>
       <h1>Quantababy</h1>
-      <SleepForm />
+      <Sleep />    
     </div>
   );
 }

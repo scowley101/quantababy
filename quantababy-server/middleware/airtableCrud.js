@@ -1,6 +1,6 @@
 import base from '../airtable/airtable.js';
 
-function createCrud(table) {
+function createCrud(table, userId) {
   // Find a single record by ID
   const findOne = () => (req, res, next) => {
     base(table)
@@ -30,8 +30,16 @@ function createCrud(table) {
   See Airtable documentation for details */
   const find = (options) => (req, res, next) => {
     const records = [];
+    const filterByUserIdFormula = userId ? `{user_id} = '${userId}'` : '';
+    const updatedOptions = {
+      ...options,
+      filterByFormula: options.filterByFormula
+        ? `AND(${options.filterByFormula}, ${filterByUserIdFormula})`
+        : filterByUserIdFormula,
+    };
+  
     base(table)
-      .select(options)
+      .select(updatedOptions)
       .eachPage(
         (pageRecords, fetchNextPage) => {
           pageRecords.forEach((record) => {
@@ -60,8 +68,9 @@ function createCrud(table) {
   // Create a new record
   // To use, create a form with the input fields matching the record fields
   const create = () => (req, res, next) => {
+    const recordData = { ...req.body, userId }; // Add the userId field to the record data
     base(table)
-      .create(req.body)
+      .create(recordData)
       .then((record) => {
         console.log(record.getId());
         req.result = record;

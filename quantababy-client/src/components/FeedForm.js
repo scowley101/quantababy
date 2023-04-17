@@ -16,9 +16,9 @@ const FeedForm = () => {
     <div>
       <form onSubmit={(e) => e.preventDefault()}>
         {isTracking ? (
-          <button onClick={handleEnd}>Satiated</button>
+          <button onClick={handleEnd}>Unlatch</button>
         ) : (
-          <button  onClick={handleStart}>Feeding</button>
+          <button  onClick={handleStart}>Feed</button>
         )}
       </form>
       {isTracking && <div>Timer: {msToFormattedString(timer)}</div>}

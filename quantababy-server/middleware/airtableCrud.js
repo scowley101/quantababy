@@ -1,6 +1,6 @@
 import base from '../airtable/airtable.js';
 
-function createCrud(table, userId) {
+function createCrud(table, recordId) {
   // Find a single record by ID
   const findOne = () => (req, res, next) => {
     base(table)

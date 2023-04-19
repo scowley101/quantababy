@@ -1,6 +1,5 @@
-
-import {Strategy as LocalStrategy} from 'passport-local';
-import bcrypt from "bcrypt";
+import { Strategy as LocalStrategy } from 'passport-local';
+import bcrypt from 'bcrypt';
 import { findOne } from './models/User.js';
 
 const verifyCallback = async (email, password, done) => {
@@ -29,7 +28,7 @@ const passportConfig = (passport) => {
   passport.serializeUser((user, done) => {
     console.log('Serializing user:', user);
 
-    done(null, user.id);
+    done(null, user.recordId);
   });
 
   passport.deserializeUser(async (id, done) => {

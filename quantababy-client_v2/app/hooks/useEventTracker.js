@@ -1,9 +1,13 @@
 // hooks/useEventTracker.js
 import { useState, useEffect } from 'react';
 import { getIsoString, getTime, msToFormattedString } from '../utils/utils';
-import { updateRecord } from '../api/updateRecord';
 
-const useEventTracker = (userId, table, createEventRecord) => {
+const useEventTracker = (
+    userId,
+    table,
+    createEventRecord,
+    updateEventRecord
+) => {
     const [isTracking, setIsTracking] = useState(false);
     const [startTime, setStartTime] = useState(null);
     const [endTime, setEndTime] = useState(null);
@@ -39,7 +43,14 @@ const useEventTracker = (userId, table, createEventRecord) => {
             };
 
             const createRecordAndUpdateId = async () => {
+                console.log(
+                    'the params going into createRecord is:',
+                    table,
+                    userId,
+                    eventBody
+                );
                 const id = await createEventRecord(table, userId, eventBody);
+                console.log('id is:', id);
                 setRecordId(id);
             };
             createRecordAndUpdateId();
@@ -57,9 +68,9 @@ const useEventTracker = (userId, table, createEventRecord) => {
                 endedAt: endTime.toLocaleTimeString(),
                 duration: msToFormattedString(duration),
             });
-            updateRecord(table, recordId, eventBody);
+            updateEventRecord(table, recordId, eventBody);
         }
-    }, [endTime, startTime, isTracking, recordId, table]);
+    }, [endTime, startTime, isTracking, recordId, updateEventRecord, table]);
 
     return {
         isTracking,

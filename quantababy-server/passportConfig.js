@@ -35,7 +35,7 @@ const passportConfig = (passport) => {
     console.log('Deserializing user with id:', id);
 
     try {
-      const user = await findOne({ id });
+      const user = await findOne({ recordId: id });
       console.log('User found:', user);
 
       done(null, user);

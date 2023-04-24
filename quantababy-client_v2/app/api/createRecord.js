@@ -1,7 +1,18 @@
 export async function createRecord(table, userId, reqBody) {
     try {
+        console.log(
+            'createRecord called with table:',
+            table,
+            'userId:',
+            userId,
+            'reqBody:',
+            reqBody
+        );
+
+        console.log('the body is', JSON.stringify(reqBody));
+
         const response = await fetch(`/api/${table}/new`, {
-            method: 'post',
+            method: 'POST',
             body: JSON.stringify(reqBody),
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',

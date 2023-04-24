@@ -6,10 +6,13 @@ import useEventTracker from '../hooks/useEventTracker';
 import { msToFormattedString } from '../utils/utils';
 import { updateRecord } from '../api/updateRecord';
 
-const FeedForm = ({ id: userId }) => {
+const FeedForm = ({ user: { id } }) => {
+    const userId = id;
+    console.log('userID in FeedForm is:', userId);
+
     const table = 'feed';
     const { isTracking, handleStart, handleEnd, timer, lastEventInfo } =
-        useEventTracker(userId, createRecord, updateRecord);
+        useEventTracker(userId, table, createRecord, updateRecord);
 
     return (
         <div>

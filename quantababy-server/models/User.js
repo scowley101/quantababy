@@ -11,12 +11,14 @@ const createUserObject = (record) => ({
   password: record.get('password'),
 });
 
-const findOne = async ({ email, id }) => {
+const findOne = async ({ email, id, user }) => {
   let filterByFormula;
   if (email) {
     filterByFormula = `{email} = '${email}'`;
   } else if (id) {
     filterByFormula = `RECORD_ID() = '${id}'`;
+  } else if (user) {
+    filterByFormula = `{user_id} = '${user}'`;
   } else {
     return null;
   }

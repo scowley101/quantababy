@@ -51,6 +51,8 @@ const login = async (req, res, next) => {
 
     req.logIn(user, (err) => {
       if (err) return next(err);
+      req.user = user;
+      console.log('log in was successful and req.user is: ', req.user);
       return res.status(200).json({ user });
     });
   })(req, res, next);

@@ -11,7 +11,10 @@ const nappy = process.env.TABLE_NAPPY;
 
 // Middleware that requires authentication
 const requireAuth = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  console.log('req.session:', req.session); // print session information
+  console.log('req.user:', req.user); // print user information from Passport
+  console.log('req.body:', req.body); // print the request body
+  if (req.user && req.user.userId) {
     return next();
   }
   res.status(401).json({ error: 'Unauthorized' });
@@ -69,8 +72,19 @@ function setupRoutes(tableName, routePath, req) {
   return tableRouter;
 }
 
-router.use('/feed', (req, res) => setupRoutes(feed, 'feed', req));
-router.use('/nappy', (req, res) => setupRoutes(nappy, 'nappy', req));
-router.use('/sleep', (req, res) => setupRoutes(sleep, 'sleep', req));
+router.get('/test-auth', requireAuth, (req, res) => {
+  console.log('req.user:', req.user);
+  res.json({ message: 'Authenticated successfully' });
+});
+
+router.use('/feed', requireAuth, (req, res) =>
+  setupRoutes(feed, 'feed', req.user)
+);
+router.use('/nappy', requireAuth, (req, res) =>
+  setupRoutes(nappy, 'nappy', req.user)
+);
+router.use('/sleep', requireAuth, (req, res) =>
+  setupRoutes(sleep, 'sleep', req.user)
+);
 
 export default router;

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { getIsoString, getTime, msToFormattedString } from '../utils/utils';
 
 const useEventTracker = (
-    userId,
+    token,
     table,
     createEventRecord,
     updateEventRecord
@@ -39,23 +39,22 @@ const useEventTracker = (
             setIsTracking(true);
             const eventBody = {
                 start_time: `${getIsoString(startTime)}`,
-                user_id: userId,
             };
 
             const createRecordAndUpdateId = async () => {
                 console.log(
                     'the params going into createRecord is:',
                     table,
-                    userId,
+                    token,
                     eventBody
                 );
-                const id = await createEventRecord(table, userId, eventBody);
+                const id = await createEventRecord(table, token, eventBody);
                 console.log('id is:', id);
                 setRecordId(id);
             };
             createRecordAndUpdateId();
         }
-    }, [startTime, createEventRecord, table, userId]);
+    }, [startTime, createEventRecord, table, token]);
 
     useEffect(() => {
         if (endTime && startTime && !isTracking) {
@@ -68,9 +67,17 @@ const useEventTracker = (
                 endedAt: endTime.toLocaleTimeString(),
                 duration: msToFormattedString(duration),
             });
-            updateEventRecord(table, recordId, eventBody);
+            updateEventRecord(table, token, recordId, eventBody);
         }
-    }, [endTime, startTime, isTracking, recordId, updateEventRecord, table]);
+    }, [
+        endTime,
+        startTime,
+        isTracking,
+        recordId,
+        updateEventRecord,
+        table,
+        token,
+    ]);
 
     return {
         isTracking,

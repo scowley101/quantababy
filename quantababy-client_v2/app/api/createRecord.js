@@ -1,10 +1,10 @@
-export async function createRecord(table, userId, reqBody) {
+export async function createRecord(table, token, reqBody) {
     try {
         console.log(
             'createRecord called with table:',
             table,
-            'userId:',
-            userId,
+            'token:',
+            token,
             'reqBody:',
             reqBody
         );
@@ -16,6 +16,7 @@ export async function createRecord(table, userId, reqBody) {
             body: JSON.stringify(reqBody),
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
+                Authorization: token,
             },
         });
 

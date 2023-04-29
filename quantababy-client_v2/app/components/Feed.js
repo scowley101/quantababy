@@ -5,7 +5,7 @@ function Feed() {
     return (
         <div>
             <h2>Feed</h2>
-            <FeedForm  />
+            <FeedForm />
         </div>
     );
 }

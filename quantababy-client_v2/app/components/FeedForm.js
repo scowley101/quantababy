@@ -1,18 +1,22 @@
 'use client';
 
 import React from 'react';
+import { useSession } from 'next-auth/react';
 import { createRecord } from '../api/createRecord';
 import useEventTracker from '../hooks/useEventTracker';
 import { msToFormattedString } from '../utils/utils';
 import { updateRecord } from '../api/updateRecord';
 
 const FeedForm = () => {
+    const { data: session, status } = useSession();
+    const accessToken = session?.accessToken;
     const table = 'feed';
     const { isTracking, handleStart, handleEnd, timer, lastEventInfo } =
-        useEventTracker(table, createRecord, updateRecord);
+        useEventTracker(accessToken, table, createRecord, updateRecord);
 
     return (
         <div>
+            <pre>{JSON.stringify(accessToken)}</pre>
             <form onSubmit={(e) => e.preventDefault()}>
                 {isTracking ? (
                     <button type="button" onClick={handleEnd}>

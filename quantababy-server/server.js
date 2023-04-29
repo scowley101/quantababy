@@ -7,7 +7,9 @@ import './env.js';
 
 // import auth
 import cors from 'cors';
+import passport from 'passport';
 import authRouter from './auth/authRoutes.js';
+import passportConfig from './passportConfig.js';
 
 // Import routes
 import router from './routes/routes.js';
@@ -25,6 +27,8 @@ app.use(express.json());
 // Use urlencoded for request body
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(passport.initialize());
+passportConfig(passport);
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '../public')));

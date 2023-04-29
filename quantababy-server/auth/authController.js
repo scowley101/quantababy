@@ -1,14 +1,14 @@
 import passport from 'passport';
-import bcrypt from 'bcrypt';
+import bcrypt, { hashSync, compareSync } from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { findOne, create } from '../models/User.js';
+import '../env.js';
 
 const register = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!username || !email || !password) {
-    return res
-      .status(400)
-      .json({ message: 'Username, email and password are required' });
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
   }
 
   try {
@@ -24,7 +24,6 @@ const register = async (req, res, next) => {
 
     // Create a new user with the email and hashed password
     const newUserPromise = create({
-      username,
       email,
       password: hashedPassword,
     });
@@ -32,12 +31,13 @@ const register = async (req, res, next) => {
     // Save the user to the database
     const newUser = await newUserPromise;
 
-    // Log the user in
-    req.logIn(newUser, (err) => {
-      if (err) return next(err);
-      return res
-        .status(201)
-        .json({ message: 'User registered and logged in successfully' });
+    res.status(201).json({
+      message: 'User registered and logged in successfully',
+      user: {
+        email: newUser.email,
+        userId: newUser.userId,
+        recordId: newUser.recordId,
+      },
     });
   } catch (err) {
     next(err);
@@ -45,17 +45,63 @@ const register = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) return next(err);
-    if (!user) return res.status(401).json(info);
+  const { email, password } = req.body;
 
-    req.logIn(user, (err) => {
-      if (err) return next(err);
-      req.user = user;
-      console.log('log in was successful and req.user is: ', req.user);
-      return res.status(200).json({ user });
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ message: '🙏 Email and password are required' });
+  }
+
+  try {
+    const user = await findOne({ email });
+
+    // user not found?
+    if (!user) {
+      return res.status(401).json({ message: '❓ Invalid email' });
+    }
+
+    // incorrect password?
+    if (!compareSync(password, user.password)) {
+      return res.status(401).json({ message: '🕵️‍♀️ Invalid password' });
+    }
+
+    // success!
+    const payload = {
+      email: user.email,
+      id: user.userId,
+    };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: '1d',
     });
-  })(req, res, next);
+
+    return res.status(200).json({
+      success: true,
+      message: '🎉 Logged in successfully',
+      user: {
+        id: user.userId,
+        email: user.email,
+      },
+      token: `Bearer ${token}`,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const protectedRoute = async (req, res) => {
+  try {
+    return res.status(200).json({
+      success: true,
+      message: '🔐 You are authorized',
+      user: {
+        email: req.user.email,
+        id: req.user.userId,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const logout = async (req, res) => {
@@ -63,4 +109,4 @@ const logout = async (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
 };
 
-export { register, login, logout };
+export { register, login, protectedRoute, logout };

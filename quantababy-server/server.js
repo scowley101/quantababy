@@ -4,6 +4,11 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import './env.js';
+
+// import auth
+import cors from 'cors';
+import authRouter from './auth/authRoutes.js';
+
 // Import routes
 import router from './routes/routes.js';
 
@@ -17,11 +22,16 @@ const PORT = 8080;
 // Use JSON for request body
 app.use(express.json());
 
+// Use urlencoded for request body
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
 // Serve static files
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Use routes
 app.use('/api', router);
+app.use('/api/auth', authRouter);
 
 const startApp = async () => {
   try {

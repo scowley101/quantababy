@@ -74,7 +74,7 @@ const login = async (req, res, next) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: '1d',
     });
-
+    console.log('🛂 the token is: ', token);
     return res.status(200).json({
       success: true,
       message: '🎉 Logged in successfully',

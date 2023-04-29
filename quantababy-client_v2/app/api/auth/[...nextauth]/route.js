@@ -19,7 +19,7 @@ export const authOptions = {
             async authorize(credentials) {
                 try {
                     const response = await fetch(
-                        'http://localhost:8080/auth/login',
+                        'http://localhost:8080/api/auth/login',
                         {
                             method: 'POST',
                             body: JSON.stringify(credentials),
@@ -29,15 +29,13 @@ export const authOptions = {
 
                     if (response.ok) {
                         const data = await response.json();
-                        const { email, username, recordId, userId } = data.user;
+                        const { email, id } = data.user;
+                        const { token } = data;
                         const user = {
                             email,
-                            username,
-                            recordId,
-                            userId,
-                            randomKey: '🍆💦',
+                            id,
+                            token,
                         };
-
                         return user;
                     }
                     return null;
@@ -49,19 +47,15 @@ export const authOptions = {
         }),
     ],
     callbacks: {
-        session: ({ session, token }) => ({
-            ...session,
-            user: {
-                ...session.user,
-                id: token.id,
-                randomKey: token.randomKey,
-            },
-        }),
-        jwt: ({ token, user }) => {
+        async jwt({ token, user }) {
             if (user) {
-                return { ...token, id: user.userId, randomKey: user.randomKey };
+                token.accessToken = user.token;
             }
             return token;
+        },
+        async session({ session, token }) {
+            session.accessToken = token.accessToken;
+            return session;
         },
     },
 };

@@ -11,9 +11,9 @@ export default async function Home() {
 
     return (
         <>
-            <Feed user={session.user} />
-            <Sleep user={session.user} />
-            <Nappy user={session.user} />
+            <Feed />
+            <Sleep />
+            <Nappy />
         </>
     );
 

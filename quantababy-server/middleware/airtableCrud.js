@@ -1,7 +1,6 @@
 import base from '../airtable/airtable.js';
 
-function createCrud(table, recordId) {
-  console.log("Here is the 'table' being passed into createCrud: ", table);
+function createCrud(table) {
   // Find a single record by ID
   const findOne = () => (req, res, next) => {
     base(table)
@@ -10,7 +9,6 @@ function createCrud(table, recordId) {
         const { fields } = record;
         const firstFieldName = Object.keys(fields)[0];
         const firstFieldValue = fields[firstFieldName];
-        console.log('Retrieved', firstFieldValue);
         req.result = record;
         next();
       })
@@ -47,7 +45,6 @@ function createCrud(table, recordId) {
             const { fields } = record;
             const firstFieldName = Object.keys(fields)[0];
             const firstFieldValue = fields[firstFieldName];
-            console.log('Retrieved', firstFieldValue);
             records.push(record);
           });
           // To fetch the next page of records, call `fetchNextPage`.
@@ -69,15 +66,10 @@ function createCrud(table, recordId) {
   // Create a new record
   // To use, create a form with the input fields matching the record fields
   const create = () => (req, res, next) => {
-    console.log(
-      'Here is the req being passed into create() in the airtableCrud',
-      req
-    );
-    const recordData = { ...req.body, userId }; // Add the userId field to the record data
+    const recordData = { ...req.body }; // Add the userId field to the record data
     base(table)
       .create(recordData)
       .then((record) => {
-        console.log(record.getId());
         req.result = record;
         next();
       })
@@ -92,7 +84,6 @@ function createCrud(table, recordId) {
     base(table)
       .update(req.params.id, req.body)
       .then((record) => {
-        console.log(record.getId());
         req.result = record;
         next();
       })

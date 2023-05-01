@@ -1,6 +1,7 @@
 import express from 'express';
 import createCrud from '../middleware/airtableCrud.js';
 import '../env.js';
+import { authenticateToken } from '../auth/authController.js';
 
 const router = express.Router();
 
@@ -9,39 +10,33 @@ const feed = process.env.TABLE_FEED;
 const sleep = process.env.TABLE_SLEEP;
 const nappy = process.env.TABLE_NAPPY;
 
-// Middleware that requires authentication
-const requireAuth = (req, res, next) => {
-  console.log('req.session:', req.session); // print session information
-  console.log('req.user:', req.user); // print user information from Passport
-  console.log('req.body:', req.body); // print the request body
-  if (req.user && req.user.userId) {
-    return next();
-  }
-  res.status(401).json({ error: 'Unauthorized' });
-};
-
 // create routes for each table
-function setupRoutes(tableName, routePath, req) {
-  console.log('req', req);
-  const crudInstance = createCrud(tableName, req.user.id);
+function setupRoutes(tableName, routePath) {
+  const crudInstance = createCrud(tableName);
   const tableRouter = express.Router();
 
+  // tableRouter.get(
+  //   '/',
+  //   authenticateToken(),
+  //   crudInstance.find({ filterByFormula: `{user} = '${req.user.id}'` }),
+  //   (req, res) => {
+  //     res.jsonp(req.result);
+  //   }
+  // );
   tableRouter.get(
-    '/',
-    requireAuth,
-    crudInstance.find({ filterByFormula: `{user} = '${req.user.id}'` }),
+    `${routePath}/new`,
+    authenticateToken(),
+    crudInstance.find(),
     (req, res) => {
-      res.jsonp(req.result);
+      res.render('new');
     }
   );
-  tableRouter.get('/new', requireAuth, (req, res) => {
-    res.render('new');
-  });
   tableRouter.post(
     '/new',
-    requireAuth,
-    crudInstance.create({ fields: { user: req.user.id, ...req.body } }),
+    authenticateToken(),
+    crudInstance.create({ fields: { ...req.body } }),
     (req, res) => {
+      console.log('crudInstance called 💥');
       // extract the record id from the response
       const recordId = req.result?.getId();
       // check if the record id exists and return it in the response
@@ -54,7 +49,7 @@ function setupRoutes(tableName, routePath, req) {
   );
   tableRouter.get(
     '/:id',
-    requireAuth,
+    authenticateToken(),
     crudInstance.findOne({ filterByFormula: `{user} = '${req.user.id}'` }),
     (req, res) => {
       res.jsonp(req.result);
@@ -62,29 +57,23 @@ function setupRoutes(tableName, routePath, req) {
   );
   tableRouter.put(
     '/:id',
-    requireAuth,
+    authenticateToken(),
     crudInstance.update({ filterByFormula: `{user} = '${req.user.id}'` }),
     (req, res) => {
       res.jsonp(req.result);
     }
   );
 
-  return tableRouter;
+  return (req, res) => tableRouter(req, res);
 }
 
-router.get('/test-auth', requireAuth, (req, res) => {
-  console.log('req.user:', req.user);
-  res.json({ message: 'Authenticated successfully' });
-});
+// router.get('/test-auth', authenticateToken(), (req, res) => {
+//   console.log('req.user:', req.user);
+//   res.json({ message: 'Authenticated successfully' });
+// });
 
-router.use('/feed', requireAuth, (req, res) =>
-  setupRoutes(feed, 'feed', req.user)
-);
-router.use('/nappy', requireAuth, (req, res) =>
-  setupRoutes(nappy, 'nappy', req.user)
-);
-router.use('/sleep', requireAuth, (req, res) =>
-  setupRoutes(sleep, 'sleep', req.user)
-);
+router.use('/feed', authenticateToken(), setupRoutes(feed, 'feed', req));
+router.use('/nappy', authenticateToken(), setupRoutes(nappy, 'nappy'));
+router.use('/sleep', authenticateToken(), setupRoutes(sleep, 'sleep'));
 
 export default router;

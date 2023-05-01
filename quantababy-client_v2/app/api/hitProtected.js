@@ -1,18 +1,9 @@
-export async function createRecord(table, token, reqBody) {
-    console.log(
-        '🍆 createRecord called with: table:',
-        table,
-        'token:',
-        token,
-        'reqBody:',
-        reqBody
-    );
+export async function hitProtected(token) {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/protected/${table}/new`,
+            `http://localhost:8080/api/auth/protected`,
             {
-                method: 'POST',
-                body: JSON.stringify(reqBody),
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
                     Authorization: token,
@@ -21,7 +12,7 @@ export async function createRecord(table, token, reqBody) {
         );
 
         if (!response.ok) {
-            throw new Error(`Failed to create ${table} record`);
+            throw new Error(`💩 Failed to hit route`);
         }
 
         const jsonResponse = await response.json(); // Convert the response to JSON

@@ -9,6 +9,7 @@ import { User } from './user';
 import Feed from './components/Feed';
 import Sleep from './components/Sleep';
 import Nappy from './components/Nappy';
+import ProtectedForm from './components/Protected';
 
 export default async function Home() {
     // const session = await getServerSession(authOptions);
@@ -17,6 +18,7 @@ export default async function Home() {
 
     return (
         <>
+            <ProtectedForm />
             <Feed />
             <Sleep />
             <Nappy />

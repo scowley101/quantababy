@@ -89,6 +89,9 @@ const login = async (req, res, next) => {
   }
 };
 
+const authenticateToken = () =>
+  passport.authenticate('jwt', { session: false });
+
 const protectedRoute = async (req, res) => {
   try {
     return res.status(200).json({
@@ -109,4 +112,4 @@ const logout = async (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
 };
 
-export { register, login, protectedRoute, logout };
+export { register, login, authenticateToken, protectedRoute, logout };

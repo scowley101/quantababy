@@ -1,10 +1,14 @@
 'use client';
 
 import React from 'react';
+import { useSession } from 'next-auth/react';
 import { createRecord } from '../api/createRecord';
 import { getIsoString, getTime } from '../utils/utils';
 
 const NappyForm = () => {
+    const { data: session, status } = useSession();
+    const accessToken = session?.accessToken;
+    const userId = session?.userId;
     const table = 'nappy';
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,8 +19,9 @@ const NappyForm = () => {
             const eventBody = {
                 type: nappyContents,
                 time: `${isoDate}`,
+                user_id: userId,
             };
-            await createRecord(table, eventBody);
+            await createRecord(accessToken, table, eventBody);
         } catch (error) {
             console.error(error);
         }

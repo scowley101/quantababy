@@ -10,6 +10,7 @@ const feed = process.env.TABLE_FEED;
 const feedStart = process.env.TABLE_FEED_START;
 const feedStop = process.env.TABLE_FEED_STOP;
 const sleep = process.env.TABLE_SLEEP;
+const nappy = process.env.TABLE_NAPPY;
 
 // create routes for each table
 function setupRoutes(tableName, routePath) {
@@ -45,5 +46,6 @@ setupRoutes(feed, 'feed');
 setupRoutes(feedStart, 'feed-start');
 setupRoutes(feedStop, 'feed-stop');
 setupRoutes(sleep, 'sleep');
+setupRoutes(nappy, 'nappy');
 
 export default protectedRouter;

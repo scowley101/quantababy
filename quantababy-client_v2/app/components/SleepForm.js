@@ -1,15 +1,19 @@
 'use client';
 
 import React from 'react';
+import { useSession } from 'next-auth/react';
 import { createRecord } from '../api/createRecord';
 import useEventTracker from '../hooks/useEventTracker';
 import { msToFormattedString } from '../utils/utils';
 import { updateRecord } from '../api/updateRecord';
 
 const SleepForm = () => {
+    const { data: session, status } = useSession();
+    const accessToken = session?.accessToken;
+    const userId = session?.userId;
     const table = 'sleep';
     const { isTracking, handleStart, handleEnd, timer, lastEventInfo } =
-        useEventTracker(table, createRecord, updateRecord);
+        useEventTracker(userId, accessToken, table, createRecord, updateRecord);
 
     return (
         <div>

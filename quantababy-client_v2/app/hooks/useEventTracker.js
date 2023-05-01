@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { getIsoString, getTime, msToFormattedString } from '../utils/utils';
 
 const useEventTracker = (
+    userId,
     token,
     table,
     createEventRecord,
@@ -39,6 +40,7 @@ const useEventTracker = (
             setIsTracking(true);
             const eventBody = {
                 start_time: `${getIsoString(startTime)}`,
+                user_id: userId,
             };
 
             const createRecordAndUpdateId = async () => {
@@ -54,7 +56,7 @@ const useEventTracker = (
             };
             createRecordAndUpdateId();
         }
-    }, [startTime, createEventRecord, table, token]);
+    }, [startTime, createEventRecord, table, token, userId]);
 
     useEffect(() => {
         if (endTime && startTime && !isTracking) {

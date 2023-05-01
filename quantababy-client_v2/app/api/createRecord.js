@@ -1,4 +1,4 @@
-export async function createRecord(table, token, reqBody) {
+export async function createRecord(token, table, reqBody) {
     console.log(
         '🍆 createRecord called with: table:',
         table,

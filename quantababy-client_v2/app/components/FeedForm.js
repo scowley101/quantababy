@@ -10,9 +10,10 @@ import { updateRecord } from '../api/updateRecord';
 const FeedForm = () => {
     const { data: session, status } = useSession();
     const accessToken = session?.accessToken;
+    const userId = session?.userId;
     const table = 'feed';
     const { isTracking, handleStart, handleEnd, timer, lastEventInfo } =
-        useEventTracker(accessToken, table, createRecord, updateRecord);
+        useEventTracker(userId, accessToken, table, createRecord, updateRecord);
 
     return (
         <div>

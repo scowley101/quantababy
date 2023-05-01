@@ -9,16 +9,18 @@ import { User } from './user';
 import Feed from './components/Feed';
 import Sleep from './components/Sleep';
 import Nappy from './components/Nappy';
-import ProtectedForm from './components/Protected';
+import Register from './components/Register';
 
 export default async function Home() {
-    // const session = await getServerSession(authOptions);
-    // console.log('🍆 session is', session);
-    // const sessionData = useSession();
+    const session = await getServerSession(authOptions);
+    console.log('session is', session);
+
+    if (!session) {
+        return <Register />;
+    }
 
     return (
         <>
-            <ProtectedForm />
             <Feed />
             <Sleep />
             <Nappy />

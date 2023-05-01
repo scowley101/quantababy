@@ -17,7 +17,6 @@ const FeedForm = () => {
 
     return (
         <div>
-            <pre>{JSON.stringify(accessToken)}</pre>
             <form onSubmit={(e) => e.preventDefault()}>
                 {isTracking ? (
                     <button type="button" onClick={handleEnd}>

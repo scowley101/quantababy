@@ -12,7 +12,6 @@ import authRouter from './auth/authRoutes.js';
 import passportConfig from './passportConfig.js';
 
 // Import routes
-// import router from './routes/routes.js';
 import protectedRouter from './routes/protectedRoutes.js';
 
 // ESM specific features
@@ -36,7 +35,6 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Use routes
 app.use('/api/protected', protectedRouter);
-// app.use('/api', router);
 app.use('/api/auth', authRouter);
 
 const startApp = async () => {

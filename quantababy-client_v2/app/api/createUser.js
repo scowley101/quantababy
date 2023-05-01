@@ -1,18 +1,18 @@
-export async function hitProtected(token) {
+export async function createUser(reqBody) {
     try {
         const response = await fetch(
-            `http://localhost:8080/api/auth/protected`,
+            `http://localhost:8080/api/auth/register`,
             {
-                method: 'GET',
+                method: 'POST',
+                body: JSON.stringify(reqBody),
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
-                    Authorization: token,
                 },
             }
         );
 
         if (!response.ok) {
-            throw new Error(`💩 Failed to hit route`);
+            throw new Error(`Failed to create User record`);
         }
 
         const jsonResponse = await response.json(); // Convert the response to JSON

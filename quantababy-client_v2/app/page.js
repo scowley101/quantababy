@@ -15,16 +15,16 @@ export default async function Home() {
     const session = await getServerSession(authOptions);
     console.log('session is', session);
 
-    if (!session) {
+    if (session) {
         return <Register />;
     }
 
     return (
-        <>
+        <div>
             <Feed />
             <Sleep />
             <Nappy />
-        </>
+        </div>
     );
 
     // return (
